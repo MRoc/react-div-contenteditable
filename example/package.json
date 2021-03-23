@@ -1,0 +1,46 @@
+{
+  "name": "@mroc/react-div-contenteditable-example",
+  "homepage": ".",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
+    "build": "node ../node_modules/react-scripts/bin/react-scripts.js build",
+    "test": "node ../node_modules/react-scripts/bin/react-scripts.js test",
+    "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
+  },
+  "dependencies": {
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom",
+    "react-scripts": "file:../node_modules/react-scripts",
+    "@mroc/react-div-contenteditable": "file:.."
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "file:../node_modules/@testing-library/jest-dom",
+    "@testing-library/react": "file:../node_modules/@testing-library/react",
+    "babel-eslint": "file:../node_modules/babel-eslint",
+    "cross-env": "file:../node_modules/cross-env",
+    "eslint": "file:../node_modules/eslint",
+    "eslint-config-prettier": "file:../node_modules/eslint-config-prettier",
+    "eslint-config-standard": "file:../node_modules/eslint-config-standard",
+    "eslint-config-standard-react": "file:../node_modules/eslint-config-standard-react",
+    "eslint-plugin-import": "file:../node_modules/eslint-plugin-import",
+    "eslint-plugin-node": "file:../node_modules/eslint-plugin-node",
+    "eslint-plugin-prettier": "file:../node_modules/eslint-plugin-prettier",
+    "eslint-plugin-promise": "file:../node_modules/eslint-plugin-promise",
+    "eslint-plugin-react": "file:../node_modules/eslint-plugin-react",
+    "gh-pages": "file:../node_modules/gh-pages",
+    "microbundle-crl": "file:../node_modules/microbundle-crl",
+    "npm-run-all": "file:../node_modules/npm-run-all",
+    "prettier": "file:../node_modules/prettier"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

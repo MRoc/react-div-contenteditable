@@ -1,0 +1,17 @@
+.dce {
+  text-align: left;
+  line-height: normal;
+  min-height: 1em;
+}
+
+.dce[contenteditable="true"] {
+  outline: 0px solid transparent;
+}
+
+.dce[contenteditable="true"]:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block;
+  color: gray;
+  background-color: transparent;
+}
