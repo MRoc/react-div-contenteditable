@@ -19,9 +19,9 @@ describe("DivContentEditable", () => {
     container.firstChild.focus();
     expect(handleFocus).toHaveBeenCalledTimes(1);
   });
-  test("Autofocus fires onFocus", async () => {
+  test("AutoFocus fires onFocus", async () => {
     const handleFocus = jest.fn();
-    render(<DivContentEditable autofocus onFocus={handleFocus} />);
+    render(<DivContentEditable autoFocus onFocus={handleFocus} />);
     expect(handleFocus).toHaveBeenCalledTimes(1);
   });
   test("Blur fires onFocusLost", async () => {

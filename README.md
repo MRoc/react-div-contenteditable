@@ -19,7 +19,7 @@ import DivContentEditable from "@mroc/react-div-contenteditable";
     <DivContentEditable
         value={text0}
         placeholder="Type here..."
-        autofocus={true}
+        autoFocus={true}
         lastCaretRect={undefined}
         onClick={hndleClick}
         onInput={handleInput}

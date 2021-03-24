@@ -19,7 +19,13 @@ const App = () => {
 
   return (
     <div>
-      <DivContentEditable style={style} placeholder="Type here..." />
+      <DivContentEditable
+        style={style}
+        placeholder="Type here..."
+        onClick={(e) => console.log("CLICKED")}
+        onFocus={(e) => console.log("FOCUSED")}
+        onFocusLost={(e) => console.log("FOCUSED LOST")}
+      />
       <DivContentEditable
         style={style}
         value={text}

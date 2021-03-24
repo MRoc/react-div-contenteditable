@@ -45,7 +45,7 @@ function DivContentEditable(props) {
       element.removeChild(element.firstChild);
     }
 
-    if (props.autofocus) {
+    if (props.autoFocus) {
       // Set selection to nearest location from last caret rect
       if (props.lastCaretRect) {
         setDomSelection(element, {
@@ -182,7 +182,7 @@ function DivContentEditable(props) {
 DivContentEditable.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
-  autofocus: PropTypes.bool,
+  autoFocus: PropTypes.bool,
   lastCaretRect: PropTypes.object,
   style: PropTypes.object,
   onClick: PropTypes.func,

@@ -6,7 +6,8 @@
     "plugin:prettier/recommended"
   ],
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 2020,
