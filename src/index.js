@@ -152,6 +152,9 @@ function DivContentEditable(props) {
       const text = e.clipboardData.getData("text/plain");
       if (text && text.length > 0) {
         insertTextAtSelection(text);
+        if (props.onInput) {
+          props.onInput(e);
+        }
       }
     }
   };

@@ -58,10 +58,26 @@ describe("DivContentEditable", () => {
     fireEvent.cut(container.firstChild);
     expect(handleCut).toHaveBeenCalledTimes(1);
   });
-  test("Paste fires onPaste", async () => {
+  test("Paste fires onPaste and onInput", async () => {
     const handlePaste = jest.fn();
-    const { container } = render(<DivContentEditable onPaste={handlePaste} />);
-    fireEvent.paste(container.firstChild, "Text");
+    const handleInput = jest.fn();
+    const { container } = render(
+      <DivContentEditable onPaste={handlePaste} onInput={handleInput} />
+    );
+
+    const selection = {
+      start: 0,
+      anchorNode: container.firstChild,
+      getRangeAt: () => {
+        return { collapse: jest.fn(), insertNode: jest.fn() };
+      }
+    };
+    window.getSelection = () => selection;
+
+    fireEvent.paste(container.firstChild, {
+      clipboardData: { getData: () => "Text" }
+    });
     expect(handlePaste).toHaveBeenCalledTimes(1);
+    expect(handleInput).toHaveBeenCalledTimes(1);
   });
 });

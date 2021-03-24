@@ -22,9 +22,16 @@ const App = () => {
       <DivContentEditable
         style={style}
         placeholder="Type here..."
-        onClick={(e) => console.log("CLICKED")}
-        onFocus={(e) => console.log("FOCUSED")}
-        onFocusLost={(e) => console.log("FOCUSED LOST")}
+        onClick={(e) => console.log("onClick")}
+        onFocus={(e) => console.log("onFocus")}
+        onFocusLost={(e) => console.log("onFocusLost")}
+        onKeyDown={(e) => console.log("onKeyDown")}
+        onKeyUp={(e) => console.log("onKeyUp")}
+        onArrowKey={(e) => console.log("onArrowKey")}
+        onInput={(e) => console.log("onInput")}
+        onPaste={(e) => console.log("onPaste")}
+        onCopy={(e) => console.log("onCopy")}
+        onCut={(e) => console.log("onCut")}
       />
       <DivContentEditable
         style={style}
