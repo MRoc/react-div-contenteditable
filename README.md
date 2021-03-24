@@ -21,6 +21,7 @@ import DivContentEditable from "@mroc/react-div-contenteditable";
         placeholder="Type here..."
         autofocus={true}
         lastCaretRect={undefined}
+        onClick={hndleClick}
         onInput={handleInput}
         onFocus={handleFocus}
         onFocusLost={handleFocusLost}

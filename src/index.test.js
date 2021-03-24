@@ -7,6 +7,12 @@ describe("DivContentEditable", () => {
     const { getByText } = render(<DivContentEditable value="Hello" />);
     expect(getByText(/Hello/i)).toBeInTheDocument();
   });
+  test("Click fires onClick", async () => {
+    const handleClick = jest.fn();
+    const { container } = render(<DivContentEditable onClick={handleClick} />);
+    container.firstChild.click();
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
   test("Focus fires onFocus", async () => {
     const handleFocus = jest.fn();
     const { container } = render(<DivContentEditable onFocus={handleFocus} />);

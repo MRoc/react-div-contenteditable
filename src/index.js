@@ -62,6 +62,25 @@ function DivContentEditable(props) {
     }
   });
 
+  const handleClick = (e) => {
+    if (props.onClick) {
+      props.onClick(e);
+    }
+  };
+
+  const handleFocus = (e) => {
+    if (props.onFocus) {
+      props.onFocus(e);
+    }
+  };
+
+  const handleFocusLost = (e) => {
+    setSelection(undefined);
+    if (props.onFocusLost) {
+      props.onFocusLost(e);
+    }
+  };
+
   const handleKeyDown = (e) => {
     // All commands that would add formatting (including Enter) are suppressed.
     if (!isAllowedKeyDown(e)) {
@@ -90,19 +109,6 @@ function DivContentEditable(props) {
   const handleKeyUp = (e) => {
     if (props.onKeyUp) {
       props.onKeyUp(e);
-    }
-  };
-
-  const handleOnFocus = (e) => {
-    if (props.onFocus) {
-      props.onFocus(e);
-    }
-  };
-
-  const handleFocusLost = (e) => {
-    setSelection(undefined);
-    if (props.onFocusLost) {
-      props.onFocusLost(e);
     }
   };
 
@@ -157,10 +163,11 @@ function DivContentEditable(props) {
       ref={divRef}
       className={styles.dce}
       style={props.style}
-      onFocus={handleOnFocus}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onBlur={handleFocusLost}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
-      onBlur={handleFocusLost}
       onInput={handleInput}
       onCopy={handleCopy}
       onCut={handleCut}
@@ -178,6 +185,7 @@ DivContentEditable.propTypes = {
   autofocus: PropTypes.bool,
   lastCaretRect: PropTypes.object,
   style: PropTypes.object,
+  onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onFocusLost: PropTypes.func,
   onKeyDown: PropTypes.func,
