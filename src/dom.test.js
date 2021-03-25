@@ -1,6 +1,8 @@
 import {
   getContainingDiv,
   getText,
+  getFirstChildOrElement,
+  getPaddedSize,
   getLineHeight,
   getLineCount,
   getCaretRect,
@@ -78,6 +80,34 @@ describe("getText", () => {
   });
 });
 
+describe("getFirstChildOrElement", () => {
+  test("With element having child returns child", () => {
+    const element = { firstChild: { a: "b" } };
+    const result = getFirstChildOrElement(element);
+    expect(result).toBe(element.firstChild);
+  });
+  test("With element having no children returns element", () => {
+    const element = {};
+    const result = getFirstChildOrElement(element);
+    expect(result).toBe(element);
+  });
+});
+
+describe("getPaddedSize", () => {
+  test("With node returns size minus padding", () => {
+    const computedStyle = {
+      paddingLeft: "1",
+      paddingRight: "2",
+      paddingTop: "3",
+      paddingBottom: "4"
+    };
+    window.getComputedStyle = jest.fn(() => computedStyle);
+    const element = { clientWidth: 10, clientHeight: 20 };
+    const result = getPaddedSize(element);
+    expect(result).toStrictEqual({ width: 7, height: 13 });
+  });
+});
+
 describe("getLineHeight", () => {
   test("With element having numeric lineHeight returns lineHeight", () => {
     const element = { style: { lineHeight: "3" } };
@@ -102,9 +132,18 @@ describe("getLineHeight", () => {
 
 describe("getLineCount", () => {
   test("With element returns height divided by line height", () => {
+    window.getComputedStyle = () => {
+      return {
+        paddingLeft: "5",
+        paddingRight: "5",
+        paddingTop: "5",
+        paddingBottom: "5"
+      };
+    };
     const element = {
       style: { lineHeight: "10" },
-      getClientRects: () => [{ height: 50 }]
+      clientWidth: 300,
+      clientHeight: 60
     };
     const result = getLineCount(element);
     expect(result).toBe(5);

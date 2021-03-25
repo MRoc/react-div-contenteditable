@@ -14,6 +14,20 @@ export function getFirstChildOrElement(element) {
   return element.firstChild || element;
 }
 
+export const getPaddedSize = (node) => {
+  const computedStyle = window.getComputedStyle(node);
+  return {
+    width:
+      node.clientWidth -
+      parseFloat(computedStyle.paddingLeft) -
+      parseFloat(computedStyle.paddingRight),
+    height:
+      node.clientHeight -
+      parseFloat(computedStyle.paddingTop) -
+      parseFloat(computedStyle.paddingBottom)
+  };
+};
+
 export function getLineHeight(element) {
   let lineHeight = parseInt(element.style.lineHeight);
 
@@ -33,8 +47,8 @@ export function getLineHeight(element) {
 
 export function getLineCount(element) {
   const lineHeight = getLineHeight(element);
-  const rect = element.getClientRects()[0];
-  return Math.round(rect.height / lineHeight);
+  const { height } = getPaddedSize(element);
+  return Math.round(height / lineHeight);
 }
 
 export function getCaretRect(element) {

@@ -87,18 +87,15 @@ function DivContentEditable(props) {
       e.preventDefault();
     }
 
-    // If caret is in last line of div and Arrow Down is pressed OR
-    // if caret is in first line of div and Arrow Up is pressed,
-    // give container the chance to move caret to another near control.
+    // If key is arrow keys, enrich event with information about cursor
+    // position so that client application has possibility to move focus.
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      if (props.onArrowKey) {
-        props.onArrowKey({
-          lineCount: getLineCount(divRef.current),
-          caretLine: getCaretLine(divRef.current),
-          caretRect: getCaretRect(divRef.current),
-          originalEvent: e
-        });
-      }
+      e = {
+        ...e,
+        lineCount: getLineCount(divRef.current),
+        caretLine: getCaretLine(divRef.current),
+        caretRect: getCaretRect(divRef.current)
+      };
     }
 
     if (props.onKeyDown) {
@@ -193,7 +190,6 @@ DivContentEditable.propTypes = {
   onFocusLost: PropTypes.func,
   onKeyDown: PropTypes.func,
   onKeyUp: PropTypes.func,
-  onArrowKey: PropTypes.func,
   onInput: PropTypes.func,
   onPaste: PropTypes.func,
   onCopy: PropTypes.func,
