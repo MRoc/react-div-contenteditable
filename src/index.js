@@ -90,12 +90,9 @@ function DivContentEditable(props) {
     // If key is arrow keys, enrich event with information about cursor
     // position so that client application has possibility to move focus.
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e = {
-        ...e,
-        lineCount: getLineCount(divRef.current),
-        caretLine: getCaretLine(divRef.current),
-        caretRect: getCaretRect(divRef.current)
-      };
+      e.lineCount = getLineCount(divRef.current);
+      e.caretLine = getCaretLine(divRef.current);
+      e.caretRect = getCaretRect(divRef.current);
     }
 
     if (props.onKeyDown) {
