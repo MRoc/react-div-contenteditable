@@ -58,8 +58,8 @@ export function getCaretRect(element) {
     const clientRect = range.getBoundingClientRect();
     if (clientRect.height > 0) {
       return {
-        x: clientRect.left,
-        y: clientRect.top,
+        x: window.scrollX + clientRect.left,
+        y: window.scrollY + clientRect.top,
         w: clientRect.width,
         h: clientRect.height
       };
@@ -74,16 +74,11 @@ export function getCaretRectByIndex(element, start) {
   const nodeToSelect = getFirstChildOrElement(element);
   selection.collapse(nodeToSelect, start);
 
-  const rect = selection.getRangeAt(0).getBoundingClientRect();
-  const augumentedRect = {
-    x: rect.left,
-    y: rect.top,
-    w: rect.width,
-    h: rect.height,
+  return {
+    ...getCaretRect(element),
     start,
     length: 0
   };
-  return augumentedRect;
 }
 
 export function getCaretRects(element) {

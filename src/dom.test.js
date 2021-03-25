@@ -178,6 +178,13 @@ describe("getCaretRect", () => {
     const caretRect = getCaretRect({});
     expect(caretRect).toBe(undefined);
   });
+  test("With window being scrolled returns in document coordinates", () => {
+    const element = createElementWithMockedSelection();
+    window.scrollX = 10;
+    window.scrollY = 20;
+    const caretRect = getCaretRect(element);
+    expect(caretRect).toStrictEqual({ x: 10, y: 23, w: 4, h: 5 });
+  });
 });
 
 describe("getCaretRectByIndex", () => {
