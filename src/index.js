@@ -6,6 +6,7 @@ import {
   getCaretLine,
   getCaretRect,
   getDomSelection,
+  getLineHeight,
   getLineCount,
   getText,
   insertTextAtSelection,
@@ -90,8 +91,9 @@ function DivContentEditable(props) {
     // If key is arrow keys, enrich event with information about cursor
     // position so that client application has possibility to move focus.
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.lineCount = getLineCount(divRef.current);
-      e.caretLine = getCaretLine(divRef.current);
+      const lineHeight = getLineHeight(divRef.current);
+      e.lineCount = getLineCount(divRef.current, lineHeight);
+      e.caretLine = getCaretLine(divRef.current, lineHeight);
       e.caretRect = getCaretRect(divRef.current);
     }
 

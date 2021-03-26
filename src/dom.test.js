@@ -49,6 +49,8 @@ function createElementWithMockedSelection(
   selection.collapse = (_, start) => (selection.start = start);
   selection.getRangeAt = () => range;
   window.getSelection = () => selection;
+  window.scrollX = 0;
+  window.scrollY = 0;
 
   return element;
 }
@@ -140,12 +142,14 @@ describe("getLineCount", () => {
         paddingBottom: "5"
       };
     };
+    window.scrollX = 10;
+    window.scrollY = 20;
+
     const element = {
-      style: { lineHeight: "10" },
       clientWidth: 300,
       clientHeight: 60
     };
-    const result = getLineCount(element);
+    const result = getLineCount(element, 10);
     expect(result).toBe(5);
   });
 });
@@ -202,6 +206,8 @@ describe("getCaretRectByIndex", () => {
         }
       };
     };
+    window.scrollX = 0;
+    window.scrollY = 0;
 
     const element = { firstChild: "child" };
     const result = getCaretRectByIndex(element, 10);
@@ -256,7 +262,6 @@ describe("getCaretLine", () => {
     const element = createElementWithMockedSelection(
       "Caret",
       {
-        style: { lineHeight: 10 },
         offsetTop: 0,
         getClientRects: () => {
           return [{ height: 100 }];
@@ -269,7 +274,7 @@ describe("getCaretLine", () => {
         height: 10
       }
     );
-    const result = getCaretLine(element);
+    const result = getCaretLine(element, 10);
     expect(result).toBe(3);
   });
 });

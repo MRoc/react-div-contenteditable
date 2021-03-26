@@ -1,6 +1,6 @@
 {
   "name": "@mroc/react-div-contenteditable",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A plain text div contentEditable with react hooks.",
   "author": "MRoc",
   "license": "MIT",

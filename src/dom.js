@@ -45,8 +45,7 @@ export function getLineHeight(element) {
   return lineHeight;
 }
 
-export function getLineCount(element) {
-  const lineHeight = getLineHeight(element);
+export function getLineCount(element, lineHeight) {
   const { height } = getPaddedSize(element);
   return Math.round(height / lineHeight);
 }
@@ -105,9 +104,8 @@ export function findNearestCaretStart(element, position) {
   return next ? next.start : 0;
 }
 
-export function getCaretLine(element) {
+export function getCaretLine(element, lineHeight) {
   const caretRectY = getCaretRect(element).y - element.offsetTop;
-  const lineHeight = getLineHeight(element);
   return Math.round(caretRectY / lineHeight);
 }
 
