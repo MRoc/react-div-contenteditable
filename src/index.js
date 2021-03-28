@@ -33,9 +33,18 @@ function isAllowedKeyDown(e) {
   return true;
 }
 
+function isEqualCaretRect(a, b) {
+  return (
+    (a && b && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h) ||
+    (!a && !b)
+  );
+}
+
 function DivContentEditable(props) {
   const divRef = useRef(null);
   const [selection, setSelection] = useState();
+  const [lastCaretRect, setLastCaretRect] = useState();
+
 
   useEffect(() => {
     const element = divRef.current;
@@ -46,9 +55,17 @@ function DivContentEditable(props) {
       element.removeChild(element.firstChild);
     }
 
+    let selectionSet;
+
     if (props.autoFocus) {
-      // Set selection to nearest location from last caret rect
-      if (props.lastCaretRect) {
+
+      // If requested, set new caret to nearest location from last caret rect.
+      if (
+        props.lastCaretRect &&
+        !isEqualCaretRect(props.lastCaretRect, lastCaretRect)
+      ) {
+        setLastCaretRect(props.lastCaretRect);
+        selectionSet = true;
         setDomSelection(element, {
           start: findNearestCaretStart(element, props.lastCaretRect)
         });
@@ -58,7 +75,7 @@ function DivContentEditable(props) {
     }
 
     // Restore selection from state after React update cycle if still having the focus
-    if (selection && element === document.activeElement) {
+    if (selection && element === document.activeElement && !selectionSet) {
       setDomSelection(element, selection);
     }
   });
@@ -122,6 +139,10 @@ function DivContentEditable(props) {
     }
   };
 
+  const handleMouseUp = (e) => {
+    setSelection(getDomSelection(divRef.current));
+  };
+
   const handleCopy = (e) => {
     if (props.onCopy) {
       props.onCopy(e);
@@ -163,6 +184,7 @@ function DivContentEditable(props) {
       className={styles.dce}
       style={props.style}
       onClick={handleClick}
+      onMouseUp={handleMouseUp}
       onFocus={handleFocus}
       onBlur={handleFocusLost}
       onKeyDown={handleKeyDown}
@@ -179,19 +201,48 @@ function DivContentEditable(props) {
 }
 
 DivContentEditable.propTypes = {
+  // Actual text to display.
   value: PropTypes.string,
+
+  // Placeholder text shown if value is empty.
   placeholder: PropTypes.string,
+
+  // If set to true, focus is requested with each render.
   autoFocus: PropTypes.bool,
+
+  // If autoFocus is true, the caret is set to the cartesian-nearest to lastCaretRect.
+  // This is a transient property which is only applied once until it changes.
   lastCaretRect: PropTypes.object,
+
+  // Additional styles applied to the div.
   style: PropTypes.object,
+
+  // Called if div is clicked.
   onClick: PropTypes.func,
+
+  // Called if div receives the focus.
   onFocus: PropTypes.func,
+
+  // Called if div looses the focus.
   onFocusLost: PropTypes.func,
+
+  // Called on key-down. ArrowUp and ArrowDown events are enriched with
+  // last caret position, number of lines and current caret line.
   onKeyDown: PropTypes.func,
+
+  // Called on key-up.
   onKeyUp: PropTypes.func,
+
+  // Called if the value has changed due to input or pasting text.
   onInput: PropTypes.func,
+
+  // Called on paste.
   onPaste: PropTypes.func,
+
+  // Called on copy.
   onCopy: PropTypes.func,
+
+  // Called on cut.
   onCut: PropTypes.func
 };
 
