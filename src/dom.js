@@ -68,6 +68,13 @@ export function getCaretRect(element) {
   }
 }
 
+export function isEqualCaretRect(a, b) {
+  return (
+    (a && b && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h) ||
+    (!a && !b)
+  );
+}
+
 export function getCaretRectByIndex(element, start) {
   const selection = window.getSelection();
   const nodeToSelect = getFirstChildOrElement(element);
@@ -124,11 +131,20 @@ export function getDomSelection(element) {
 }
 
 export function setDomSelection(element, selection) {
+  const windowSelection = window.getSelection();
   if (selection) {
     const nodeToSelect = getFirstChildOrElement(element);
-    window.getSelection().collapse(nodeToSelect, selection.start);
+    if (selection.start === selection.end) {
+      windowSelection.collapse(nodeToSelect, selection.start);
+    } else {
+      const range = document.createRange();
+      range.setStart(nodeToSelect, selection.start);
+      range.setEnd(nodeToSelect, selection.end);
+      windowSelection.removeAllRanges();
+      windowSelection.addRange(range);
+    }
   } else {
-    window.getSelection().removeAllRanges();
+    windowSelection.removeAllRanges();
   }
 }
 

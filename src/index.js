@@ -5,6 +5,7 @@ import {
   findNearestCaretStart,
   getCaretLine,
   getCaretRect,
+  isEqualCaretRect,
   getDomSelection,
   getLineHeight,
   getLineCount,
@@ -33,18 +34,10 @@ function isAllowedKeyDown(e) {
   return true;
 }
 
-function isEqualCaretRect(a, b) {
-  return (
-    (a && b && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h) ||
-    (!a && !b)
-  );
-}
-
 function DivContentEditable(props) {
   const divRef = useRef(null);
   const [selection, setSelection] = useState();
   const [lastCaretRect, setLastCaretRect] = useState();
-
 
   useEffect(() => {
     const element = divRef.current;
@@ -55,27 +48,30 @@ function DivContentEditable(props) {
       element.removeChild(element.firstChild);
     }
 
-    let selectionSet;
+    // If there is a request to set caret to a position that was not set before
+    const setDomSelectionToLastCaretRect =
+      props.autoFocus &&
+      props.lastCaretRect &&
+      !isEqualCaretRect(props.lastCaretRect, lastCaretRect);
+
+    if (setDomSelectionToLastCaretRect) {
+      setLastCaretRect(props.lastCaretRect);
+      setDomSelection(element, {
+        start: findNearestCaretStart(element, props.lastCaretRect)
+      });
+    }
 
     if (props.autoFocus) {
-
-      // If requested, set new caret to nearest location from last caret rect.
-      if (
-        props.lastCaretRect &&
-        !isEqualCaretRect(props.lastCaretRect, lastCaretRect)
-      ) {
-        setLastCaretRect(props.lastCaretRect);
-        selectionSet = true;
-        setDomSelection(element, {
-          start: findNearestCaretStart(element, props.lastCaretRect)
-        });
-      }
-
       element.focus();
     }
 
     // Restore selection from state after React update cycle if still having the focus
-    if (selection && element === document.activeElement && !selectionSet) {
+    const setDomSelectionToLastSelection =
+      selection &&
+      element === document.activeElement &&
+      !setDomSelectionToLastCaretRect;
+
+    if (setDomSelectionToLastSelection) {
       setDomSelection(element, selection);
     }
   });
@@ -94,6 +90,7 @@ function DivContentEditable(props) {
 
   const handleFocusLost = (e) => {
     setSelection(undefined);
+    setLastCaretRect(undefined);
     if (props.onFocusLost) {
       props.onFocusLost(e);
     }
@@ -139,10 +136,6 @@ function DivContentEditable(props) {
     }
   };
 
-  const handleMouseUp = (e) => {
-    setSelection(getDomSelection(divRef.current));
-  };
-
   const handleCopy = (e) => {
     if (props.onCopy) {
       props.onCopy(e);
@@ -184,7 +177,6 @@ function DivContentEditable(props) {
       className={styles.dce}
       style={props.style}
       onClick={handleClick}
-      onMouseUp={handleMouseUp}
       onFocus={handleFocus}
       onBlur={handleFocusLost}
       onKeyDown={handleKeyDown}

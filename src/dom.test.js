@@ -333,7 +333,7 @@ describe("setDomSelection", () => {
     const selection = { collapse: jest.fn() };
     window.getSelection = () => selection;
 
-    setDomSelection(element, { start: 3 });
+    setDomSelection(element, { start: 3, end: 3 });
 
     expect(selection.collapse.mock.calls).toEqual([[element, 3]]);
   });
@@ -342,9 +342,26 @@ describe("setDomSelection", () => {
     const selection = { collapse: jest.fn() };
     window.getSelection = () => selection;
 
-    setDomSelection({ firstChild }, { start: 3 });
+    setDomSelection({ firstChild }, { start: 3, end: 3 });
 
     expect(selection.collapse.mock.calls).toEqual([[firstChild, 3]]);
+  });
+  test("With element.firstChild and range sets range", () => {
+    const firstChild = { a: "b" };
+
+    const selection = { removeAllRanges: jest.fn(), addRange: jest.fn() };
+    window.getSelection = () => selection;
+
+    const range = {
+      setStart: jest.fn(),
+      setEnd: jest.fn()
+    };
+    document.createRange = () => range;
+
+    setDomSelection({ firstChild }, { start: 3, end: 2 });
+
+    expect(selection.removeAllRanges.mock.calls.length).toBe(1);
+    expect(selection.addRange.mock.calls).toEqual([[range]]);
   });
   test("With no selection removes selection", () => {
     const selection = { removeAllRanges: jest.fn() };

@@ -22,21 +22,21 @@ const App = () => {
       <DivContentEditable
         style={style}
         placeholder="Type here..."
-        onClick={(e) => console.log(`onClick`)}
-        onFocus={(e) => console.log(`onFocus`)}
-        onFocusLost={(e) => console.log(`onFocusLost`)}
+        onClick={(e) => console.log(`onClick '${e.target.innerText}'`)}
+        onFocus={(e) => console.log(`onFocus '${e.target.innerText}'`)}
+        onFocusLost={(e) => console.log(`onFocusLost '${e.target.innerText}'`)}
         onKeyDown={(e) =>
           console.log(
-            `onKeyDown lineCount=${e.lineCount} caretLine=${
-              e.caretLine
-            } caretRect=${JSON.stringify(e.caretRect)}`
+            `onKeyDown '${e.target.innerText}' lineCount=${
+              e.lineCount
+            } caretLine=${e.caretLine} caretRect=${JSON.stringify(e.caretRect)}`
           )
         }
-        onKeyUp={(e) => console.log(`onKeyUp`)}
-        onInput={(e) => console.log(`onInput`)}
-        onPaste={(e) => console.log(`onPaste`)}
-        onCopy={(e) => console.log(`onCopy`)}
-        onCut={(e) => console.log(`onCut`)}
+        onKeyUp={(e) => console.log(`onKeyUp '${e.target.innerText}'`)}
+        onInput={(e) => console.log(`onInput '${e.target.innerText}'`)}
+        onPaste={(e) => console.log(`onPaste '${e.target.innerText}'`)}
+        onCopy={(e) => console.log(`onCopy '${e.target.innerText}'`)}
+        onCut={(e) => console.log(`onCut '${e.target.innerText}'`)}
       />
       <DivContentEditable
         style={style}
