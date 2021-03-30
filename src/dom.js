@@ -50,9 +50,13 @@ export function getLineCount(element, lineHeight) {
   return Math.round(height / lineHeight);
 }
 
+export function hasSelection() {
+  return window.getSelection().type !== "None";
+}
+
 export function getCaretRect(element) {
-  const selection = window.getSelection();
-  if (selection.type !== "None") {
+  if (hasSelection()) {
+    const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     const clientRect = range.getBoundingClientRect();
     if (clientRect.height > 0) {

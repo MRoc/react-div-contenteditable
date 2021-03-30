@@ -2,6 +2,9 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import DivContentEditable from "./index.js";
 
+import * as dom from "./dom.js";
+jest.mock("./dom.js");
+
 describe("DivContentEditable", () => {
   test("Renders text", () => {
     const { getByText } = render(<DivContentEditable value="Hello" />);
@@ -39,6 +42,26 @@ describe("DivContentEditable", () => {
     );
     fireEvent.keyDown(container.firstChild, { key: "Enter", code: "Enter" });
     expect(handleKeyDown).toHaveBeenCalledTimes(1);
+  });
+  test("Key down fires on arrow up/down with event being enriched", async () => {
+    const rect = { x: 1, y: 2, w: 3, h: 4 };
+    dom.hasSelection.mockReturnValueOnce(true);
+    dom.getLineCount.mockReturnValueOnce(1);
+    dom.getCaretLine.mockReturnValueOnce(0);
+    dom.getCaretRect.mockReturnValueOnce(rect);
+
+    const handleKeyDown = jest.fn();
+    const { container } = render(
+      <DivContentEditable onKeyDown={handleKeyDown} />
+    );
+    fireEvent.keyDown(container.firstChild, {
+      key: "ArrowDown"
+    });
+    expect(handleKeyDown).toHaveBeenCalledTimes(1);
+    expect(dom.hasSelection).toHaveBeenCalledTimes(1);
+    expect(handleKeyDown.mock.calls[0][0].lineCount).toBe(1);
+    expect(handleKeyDown.mock.calls[0][0].caretLine).toBe(0);
+    expect(handleKeyDown.mock.calls[0][0].caretRect).toStrictEqual(rect);
   });
   test("Key up fires onKeyUp", async () => {
     const handleKeyUp = jest.fn();

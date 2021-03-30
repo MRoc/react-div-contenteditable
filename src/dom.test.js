@@ -5,6 +5,7 @@ import {
   getPaddedSize,
   getLineHeight,
   getLineCount,
+  hasSelection,
   getCaretRect,
   getCaretRectByIndex,
   getCaretRects,
@@ -151,6 +152,27 @@ describe("getLineCount", () => {
     };
     const result = getLineCount(element, 10);
     expect(result).toBe(5);
+  });
+});
+
+describe("hasSelection", () => {
+  test("With no selection returns false", () => {
+    window.getSelection = () => {
+      return { type: "None" };
+    };
+    expect(hasSelection()).toBe(false);
+  });
+  test("With caret selection returns true", () => {
+    window.getSelection = () => {
+      return { type: "Caret" };
+    };
+    expect(hasSelection()).toBe(true);
+  });
+  test("With range selection returns true", () => {
+    window.getSelection = () => {
+      return { type: "Range" };
+    };
+    expect(hasSelection()).toBe(true);
   });
 });
 
@@ -361,7 +383,7 @@ describe("setDomSelection", () => {
 
     setDomSelection({ firstChild }, { start: 3, end: 2 });
 
-    expect(selection.removeAllRanges.mock.calls.length).toBe(1);
+    expect(selection.removeAllRanges).toHaveBeenCalledTimes(1);
     expect(selection.addRange.mock.calls).toEqual([[range]]);
   });
   test("With no selection removes selection", () => {
@@ -384,8 +406,8 @@ describe("insertTextAtSelection", () => {
     createElementWithMockedSelection("Caret", element, {}, range, {});
     insertTextAtSelection("ABC");
 
-    expect(range.insertNode.mock.calls.length).toBe(1);
-    expect(range.collapse.mock.calls.length).toBe(1);
-    expect(element.normalize.mock.calls.length).toBe(1);
+    expect(range.insertNode).toHaveBeenCalledTimes(1);
+    expect(range.collapse).toHaveBeenCalledTimes(1);
+    expect(element.normalize).toHaveBeenCalledTimes(1);
   });
 });

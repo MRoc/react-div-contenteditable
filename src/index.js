@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styles from "./styles.module.css";
 import {
   findNearestCaretStart,
+  hasSelection,
   getCaretLine,
   getCaretRect,
   isEqualCaretRect,
@@ -88,7 +89,7 @@ function DivContentEditable(props) {
 
     // If key is arrow keys, enrich event with information about cursor
     // position so that client application has possibility to move focus.
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    if (hasSelection() && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       const lineHeight = getLineHeight(divRef.current);
       e.lineCount = getLineCount(divRef.current, lineHeight);
       e.caretLine = getCaretLine(divRef.current, lineHeight);
