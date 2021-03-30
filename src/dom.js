@@ -32,14 +32,14 @@ export function getLineHeight(element) {
   let lineHeight = parseInt(element.style.lineHeight);
 
   if (isNaN(lineHeight)) {
-    const clone = element.cloneNode();
-    clone.innerHTML = "<br>";
+    const clone = document.createElement(element.nodeName);
+    clone.style.fontSize = window.getComputedStyle(element)["font-size"];
+    clone.style.padding = "0px";
+    clone.style.border = "0px";
+    clone.innerHTML = "&nbsp;";
     element.appendChild(clone);
-    const singleLineHeight = clone.offsetHeight;
-    clone.innerHTML = "<br><br>";
-    const doubleLineHeight = clone.offsetHeight;
+    lineHeight = clone.offsetHeight;
     element.removeChild(clone);
-    lineHeight = doubleLineHeight - singleLineHeight;
   }
 
   return lineHeight;
