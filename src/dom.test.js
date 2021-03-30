@@ -118,18 +118,24 @@ describe("getLineHeight", () => {
     expect(result).toBe(3);
   });
   test("With element having NO numeric lineHeight returns lineHeight by shadow rendering", () => {
+    const windowStyle = { "font-size": "normal" };
+    window.getComputedStyle = jest.fn(() => windowStyle);
+
+    const clone = document.createElement("div");
+
+    const style = {};
+    Object.defineProperty(clone, "style", { get: () => style });
+    Object.defineProperty(clone, "offsetHeight", { get: () => 10 });
+
     document.body.innerHTML = '<div id="test"/>';
-    document.body.firstChild.cloneNode = jest.fn(() => {
-      const element = document.createElement("div");
-      Object.defineProperty(element, "offsetHeight", {
-        get: () => {
-          return (element.innerHTML.length / "<br>".length) * 10;
-        }
-      });
-      return element;
-    });
+    document.createElement = jest.fn(() => clone);
+
     const result = getLineHeight(document.body.firstChild);
+
     expect(result).toBe(10);
+    expect(clone.style.padding).toBe("0px");
+    expect(clone.style.border).toBe("0px");
+    expect(clone.style.fontSize).toBe("normal");
   });
 });
 
