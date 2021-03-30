@@ -14,30 +14,10 @@ import {
   setDomSelection
 } from "./dom.js";
 
-function isAllowedKeyDown(e) {
-  if (e.ctrlKey || e.metaKey) {
-    switch (e.key) {
-      case "B":
-      case "b":
-        return false;
-      case "I":
-      case "i":
-        return false;
-      case "U":
-      case "u":
-        return false;
-      default:
-        break;
-    }
-  }
-
-  return true;
-}
-
 function DivContentEditable(props) {
   const divRef = useRef(null);
   const [selection, setSelection] = useState();
-  const [lastCaretRect, setLastCaretRect] = useState();
+  const [selectionRequest, setSelectionRequest] = useState();
 
   useEffect(() => {
     const element = divRef.current;
@@ -48,17 +28,19 @@ function DivContentEditable(props) {
       element.removeChild(element.firstChild);
     }
 
-    // If there is a request to set caret to a position that was not set before
-    const setDomSelectionToLastCaretRect =
+    // If there is a selection request with autofocus, set caret.
+    // This request will only be executed once (transient).
+    const setDomSelectionToSelectionRequest =
       props.autoFocus &&
-      props.lastCaretRect &&
-      !isEqualCaretRect(props.lastCaretRect, lastCaretRect);
+      props.selection &&
+      !isEqualCaretRect(props.selection, selectionRequest);
 
-    if (setDomSelectionToLastCaretRect) {
-      setLastCaretRect(props.lastCaretRect);
-      setDomSelection(element, {
-        start: findNearestCaretStart(element, props.lastCaretRect)
-      });
+    if (setDomSelectionToSelectionRequest) {
+      setSelectionRequest(props.selection);
+      setDomSelection(
+        element,
+        selectionRequestToSelection(element, props.selection)
+      );
     }
 
     if (props.autoFocus) {
@@ -69,7 +51,7 @@ function DivContentEditable(props) {
     const setDomSelectionToLastSelection =
       selection &&
       element === document.activeElement &&
-      !setDomSelectionToLastCaretRect;
+      !setDomSelectionToSelectionRequest;
 
     if (setDomSelectionToLastSelection) {
       setDomSelection(element, selection);
@@ -78,11 +60,13 @@ function DivContentEditable(props) {
 
   const handleClick = (e) => {
     if (props.onClick) {
+      e.selection = getDomSelection(divRef.current);
       props.onClick(e);
     }
   };
 
   const handleFocus = (e) => {
+    setSelectionRequest(undefined);
     if (props.onFocus) {
       props.onFocus(e);
     }
@@ -90,7 +74,7 @@ function DivContentEditable(props) {
 
   const handleFocusLost = (e) => {
     setSelection(undefined);
-    setLastCaretRect(undefined);
+    setSelectionRequest(undefined);
     if (props.onFocusLost) {
       props.onFocusLost(e);
     }
@@ -192,8 +176,50 @@ function DivContentEditable(props) {
   );
 }
 
+function selectionRequestToSelection(element, selection) {
+  switch (selection.type) {
+    case "position": {
+      const start = findNearestCaretStart(element, selection);
+      return { start, end: start };
+    }
+    case "index": {
+      return selection;
+    }
+    default:
+      throw new Error(`Unknown selection type '${selection.type}'`);
+  }
+}
+
+function isAllowedKeyDown(e) {
+  if (e.ctrlKey || e.metaKey) {
+    switch (e.key) {
+      case "B":
+      case "b":
+        return false;
+      case "I":
+      case "i":
+        return false;
+      case "U":
+      case "u":
+        return false;
+      default:
+        break;
+    }
+  }
+
+  return true;
+}
+
+export function caretByPosition({ x, y }) {
+  return { type: "position", x, y };
+}
+
+export function caretByIndex({ start, end }) {
+  return { type: "index", start, end };
+}
+
 DivContentEditable.propTypes = {
-  // Actual text to display.
+  // text to display.
   value: PropTypes.string,
 
   // Placeholder text shown if value is empty.
@@ -202,9 +228,14 @@ DivContentEditable.propTypes = {
   // If set to true, focus is requested with each render.
   autoFocus: PropTypes.bool,
 
-  // If autoFocus is true, the caret is set to the cartesian-nearest to lastCaretRect.
+  // If autoFocus is true, the caret is set to match either by cartesian-nearest position or by index.
+  //
   // This is a transient property which is only applied once until it changes.
-  lastCaretRect: PropTypes.object,
+  //
+  // { type: "position", x: number, y: number }
+  // { type: "index",  start: number, end: number }
+  //
+  selection: PropTypes.object,
 
   // Additional styles applied to the div.
   style: PropTypes.object,

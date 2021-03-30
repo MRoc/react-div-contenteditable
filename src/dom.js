@@ -88,9 +88,11 @@ export function getCaretRectByIndex(element, start) {
 }
 
 export function getCaretRects(element) {
-  return Array.prototype.map.call(element.innerText, (_, i) =>
-    getCaretRectByIndex(element, i)
-  );
+  const result = [];
+  for (let i = 0; i < element.innerText.length + 1; ++i) {
+    result.push(getCaretRectByIndex(element, i));
+  }
+  return result;
 }
 
 export function calculateDistance(x0, y0, x1, y1) {
@@ -120,7 +122,7 @@ export function getDomSelection(element) {
   const selection = window.getSelection();
   if (
     selection.type !== "None" &&
-    getContainingDiv(selection.anchorNode) === element
+    (!element || getContainingDiv(selection.anchorNode) === element)
   ) {
     const range = selection.getRangeAt(0);
     return {

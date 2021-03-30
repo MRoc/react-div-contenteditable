@@ -230,7 +230,8 @@ describe("getCaretRects", () => {
     expect(result).toEqual([
       { x: 0, y: 3, w: 4, h: 5, start: 0, length: 0 },
       { x: 2, y: 3, w: 4, h: 5, start: 1, length: 0 },
-      { x: 4, y: 3, w: 4, h: 5, start: 2, length: 0 }
+      { x: 4, y: 3, w: 4, h: 5, start: 2, length: 0 },
+      { x: 6, y: 3, w: 4, h: 5, start: 3, length: 0 }
     ]);
   });
 });
