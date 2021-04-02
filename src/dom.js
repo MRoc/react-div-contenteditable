@@ -83,6 +83,10 @@ export function clip(value, min, max) {
   return value > max ? max : value < min ? min : value;
 }
 
+export function calculateDistance(x0, y0, x1, y1) {
+  return Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
+}
+
 export function getCaretRectByIndex(element, start) {
   const selection = window.getSelection();
   const nodeToSelect = getFirstChildOrElement(element);
@@ -101,10 +105,6 @@ export function getCaretRects(element) {
     result.push(getCaretRectByIndex(element, i));
   }
   return result;
-}
-
-export function calculateDistance(x0, y0, x1, y1) {
-  return Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
 }
 
 export function findNearestCaretStart(element, position) {
