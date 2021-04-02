@@ -10,6 +10,7 @@ import {
   getCaretRectByIndex,
   getCaretRects,
   calculateDistance,
+  clip,
   findNearestCaretStart,
   getCaretLine,
   getDomSelection,
@@ -271,10 +272,18 @@ describe("calculateDistance", () => {
   });
 });
 
-describe("calculateDistance", () => {
-  test("With two points returns eullidean distance", () => {
-    const result = calculateDistance(1, 1, 2, 2);
-    expect(result).toBe(Math.sqrt(2));
+describe("clip", () => {
+  test("With number in range returns number", () => {
+    const result = clip(1, -1, 2);
+    expect(result).toBe(1);
+  });
+  test("With number below min returns min", () => {
+    const result = clip(-3, -1, 2);
+    expect(result).toBe(-1);
+  });
+  test("With number above max returns max", () => {
+    const result = clip(4, -1, 2);
+    expect(result).toBe(2);
   });
 });
 
@@ -358,7 +367,7 @@ describe("getDomSelection", () => {
 
 describe("setDomSelection", () => {
   test("With element and selection sets selection", () => {
-    const element = {};
+    const element = { textContent: "abc" };
     const selection = { collapse: jest.fn() };
     window.getSelection = () => selection;
 
@@ -371,12 +380,13 @@ describe("setDomSelection", () => {
     const selection = { collapse: jest.fn() };
     window.getSelection = () => selection;
 
-    setDomSelection({ firstChild }, { start: 3, end: 3 });
+    setDomSelection({ firstChild, textContent: "abc" }, { start: 3, end: 3 });
 
     expect(selection.collapse.mock.calls).toEqual([[firstChild, 3]]);
   });
   test("With element.firstChild and range sets range", () => {
     const firstChild = { a: "b" };
+    const element = { firstChild, textContent: "abc" };
 
     const selection = { removeAllRanges: jest.fn(), addRange: jest.fn() };
     window.getSelection = () => selection;
@@ -387,7 +397,7 @@ describe("setDomSelection", () => {
     };
     document.createRange = () => range;
 
-    setDomSelection({ firstChild }, { start: 3, end: 2 });
+    setDomSelection(element, { start: 3, end: 2 });
 
     expect(selection.removeAllRanges).toHaveBeenCalledTimes(1);
     expect(selection.addRange.mock.calls).toEqual([[range]]);

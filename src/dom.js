@@ -79,6 +79,10 @@ export function isEqualCaretRect(a, b) {
   );
 }
 
+export function clip(value, min, max) {
+  return value > max ? max : value < min ? min : value;
+}
+
 export function getCaretRectByIndex(element, start) {
   const selection = window.getSelection();
   const nodeToSelect = getFirstChildOrElement(element);
@@ -140,12 +144,15 @@ export function setDomSelection(element, selection) {
   const windowSelection = window.getSelection();
   if (selection) {
     const nodeToSelect = getFirstChildOrElement(element);
-    if (selection.start === selection.end) {
-      windowSelection.collapse(nodeToSelect, selection.start);
+    const textLength = getText(element).length;
+    const start = clip(selection.start, 0, textLength);
+    const end = clip(selection.end, 0, textLength);
+    if (start === end) {
+      windowSelection.collapse(nodeToSelect, start);
     } else {
       const range = document.createRange();
-      range.setStart(nodeToSelect, selection.start);
-      range.setEnd(nodeToSelect, selection.end);
+      range.setStart(nodeToSelect, start);
+      range.setEnd(nodeToSelect, end);
       windowSelection.removeAllRanges();
       windowSelection.addRange(range);
     }
