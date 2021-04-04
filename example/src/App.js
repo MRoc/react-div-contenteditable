@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import DivContentEditable from "@mroc/react-div-contenteditable";
+import { DivContentEditable } from "@mroc/react-div-contenteditable";
 import "@mroc/react-div-contenteditable/dist/index.css";
 
 const App = () => {

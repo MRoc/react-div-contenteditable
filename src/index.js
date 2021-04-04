@@ -15,7 +15,7 @@ import {
   setDomSelection
 } from "./dom.js";
 
-function DivContentEditable(props) {
+export function DivContentEditable(props) {
   const divRef = useRef(null);
   const [selection, setSelection] = useState();
   const [selectionRequest, setSelectionRequest] = useState();
@@ -269,5 +269,3 @@ DivContentEditable.propTypes = {
   // Called on cut.
   onCut: PropTypes.func
 };
-
-export default DivContentEditable;
