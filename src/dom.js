@@ -147,7 +147,7 @@ export function setDomSelection(element, selection) {
     const textLength = getText(element).length;
     const start = clip(selection.start, 0, textLength);
     const end = clip(selection.end, 0, textLength);
-    if (start === end) {
+    if (end === undefined || start === end) {
       windowSelection.collapse(nodeToSelect, start);
     } else {
       const range = document.createRange();
@@ -163,11 +163,17 @@ export function setDomSelection(element, selection) {
 
 export function insertTextAtSelection(text) {
   const selection = window.getSelection();
+
   const range = selection.getRangeAt(0);
   const element = getContainingDiv(selection.anchorNode);
-  const textNode = document.createTextNode(text);
 
-  range.insertNode(textNode);
-  range.collapse();
+  range.deleteContents();
+  range.insertNode(document.createTextNode(text));
+
+  const selectionAfterInsert = getDomSelection(element);
+
   element.normalize();
+  setDomSelection(element, {
+    start: selectionAfterInsert.start + text.length
+  });
 }

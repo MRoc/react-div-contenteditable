@@ -414,16 +414,25 @@ describe("setDomSelection", () => {
 
 describe("insertTextAtSelection", () => {
   test("With text inserts text node in document", () => {
-    const range = { collapse: jest.fn(), insertNode: jest.fn() };
+    const range = {
+      deleteContents: jest.fn(),
+      insertNode: jest.fn()
+    };
     const element = {
       nodeType: Node.ELEMENT_NODE,
       normalize: jest.fn()
     };
-    createElementWithMockedSelection("Caret", element, {}, range, {});
+    createElementWithMockedSelection(
+      "Caret",
+      element,
+      { collapse: jest.fn() },
+      range,
+      {}
+    );
     insertTextAtSelection("ABC");
 
+    expect(range.deleteContents).toHaveBeenCalledTimes(1);
     expect(range.insertNode).toHaveBeenCalledTimes(1);
-    expect(range.collapse).toHaveBeenCalledTimes(1);
     expect(element.normalize).toHaveBeenCalledTimes(1);
   });
 });

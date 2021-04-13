@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import DivContentEditable from "./index.js";
+import { DivContentEditable } from "./index.js";
 
 import * as dom from "./dom.js";
 jest.mock("./dom.js");
