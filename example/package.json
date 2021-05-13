@@ -1,7 +1,7 @@
 {
   "name": "@mroc/react-div-contenteditable-example",
   "homepage": ".",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "private": true,
   "scripts": {
     "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
